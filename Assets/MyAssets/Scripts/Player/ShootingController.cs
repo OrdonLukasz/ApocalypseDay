@@ -34,10 +34,11 @@ public class ShootingController : MonoBehaviour
     //public AudioClip runfootStep;
     //public AudioClip noAmmo;
     //public AudioClip reload;
-
+    public LayerMask hitableLayerMasks;
     private Vector3 lookPoint;
     private Vector3 lookDirection;
     private Quaternion lookRotation;
+    public Transform empty;
 
     public void Update()
     {
@@ -52,7 +53,7 @@ public class ShootingController : MonoBehaviour
         Vector3 DirectionRay = aimingTarget.transform.TransformDirection(Vector3.forward);
         Debug.DrawRay(aimingTarget.transform.position, DirectionRay * Range, Color.blue);
         RaycastHit Hit;
-        if (Physics.Raycast(aimingTarget.transform.position, DirectionRay, out Hit, Range))
+        if (Physics.Raycast(aimingTarget.transform.position, DirectionRay, out Hit, Range, hitableLayerMasks))
         {
             lookPoint = Hit.point;
             lookDirection = (Hit.point - shootParticle.transform.position);
@@ -69,9 +70,9 @@ public class ShootingController : MonoBehaviour
                 viewfinder.DOColor(Color.white, 0.2f);
                 // viewfinder.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0.5f);
             }
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && Input.GetMouseButton(1))
             {
-
+                Debug.Log(Hit.transform.gameObject.name);
                 if (Hit.transform.gameObject.GetComponent<EnemyScript>())
                 {
 
@@ -82,12 +83,24 @@ public class ShootingController : MonoBehaviour
                 
             }
             lookFor.position = lookPoint;
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButtonDown(1))
             {
                 DOTween.To(() => aimingWeaponRig.weight, x => aimingWeaponRig.weight = x, weaponAimedForce, timeToEnd).SetEase(curve);
             }
-            else
+            if (Input.GetMouseButtonUp(1))
+            {
                 DOTween.To(() => aimingWeaponRig.weight, x => aimingWeaponRig.weight = x, 0f, timeToEnd).SetEase(curve);
+            }
+
+        }
+        else
+        {
+            viewfinder.DOColor(Color.white, 0.2f);
+            lookFor.position = empty.position;
+            if (Input.GetMouseButton(0))
+            {
+                Fire();
+            }
         }
 
     }
@@ -100,19 +113,17 @@ public class ShootingController : MonoBehaviour
             {
                 nextFire = Time.time + fireRate;
                 shootParticle.Emit(1);
-                //AudioSource.PlayClipAtPoint(machineGunShot, transform.position, 1);
                 shootParticle.transform.rotation = Quaternion.Slerp(shootParticle.transform.rotation, lookRotation, Time.deltaTime * sightRotationSpeed);
 
                 Sequence doorSequence = DOTween.Sequence();
                 doorSequence.Append(fireLight.DOIntensity(8, 0.05f));
                 doorSequence.Append(fireLight.DOIntensity(0, 0.05f));
                 ammo--;
-                //playerMovement.ammoText.text = $"{playerMovement.ammo}";
+
             }
             else
             {
                 nextFire = Time.time + fireRate;
-                //AudioSource.PlayClipAtPoint(noAmmo, transform.position, 1);
             }
         }
     }
@@ -121,9 +132,7 @@ public class ShootingController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            //AudioSource.PlayClipAtPoint(reload, transform.position, 1);
             ammo = 30;
-            //playerMovement.ammoText.text = $"{playerMovement.ammo}";
         }
     }
 }

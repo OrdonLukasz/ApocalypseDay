@@ -149,8 +149,8 @@ public class EnemyScript : MonoBehaviour
         isEnemyDead = true;
         agent.enabled = false;
         animator.SetBool("IsWalking", false);
-        agent.isStopped = true;
-        agent.ResetPath();
+        //agent.isStopped = true;
+        //agent.ResetPath();
         animator.SetTrigger("IsDeath");
     }
 
