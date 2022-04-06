@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 move;
     [SerializeField] private float turnSmoothVelocity;
 
+
     private void Start()
     {
         agent.updateRotation = false;
