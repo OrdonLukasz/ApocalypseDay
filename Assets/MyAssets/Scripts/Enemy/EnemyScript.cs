@@ -6,6 +6,8 @@ using UnityEditor.AI;
 
 public class EnemyScript : MonoBehaviour
 {
+    public ZoombieManager zoombieManager;
+
     [SerializeField] private Animator animator;
     public NavMeshAgent agent;
     public Transform player;
@@ -27,11 +29,20 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float currentHealth = 100;
     [SerializeField] private float avatarRotationFrequency = 5f;
 
+    public float footStepsRate = 0.3f;
+    public float runFootStepsRate = 1f;
+    public float nextFootStep = 0.7f;
+
+    [SerializeField] private AudioClip walkSound;
+    [SerializeField] private AudioClip idleSound;
+    [SerializeField] private AudioClip attackSound;
+    [SerializeField] private AudioClip deadSound;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator.SetBool("IsIdle", true);
+       // player.position = zoombieManager.playerPosition.position;
     }
 
     public void Start()
@@ -54,18 +65,12 @@ public class EnemyScript : MonoBehaviour
             if (!playerInSightRange && !playerInAttackRange)
             {
                 //Patroling();
-                agent.enabled = false;
-                animator.SetBool("IsAttacking", false);
-                animator.SetBool("IsIdle", true);
-                animator.SetBool("IsWalking", false);
+                OnIdle();
+
             }
             if (playerInSightRange && !playerInAttackRange)
             {
-                agent.enabled = true;
                 ChasePlayer();
-                animator.SetBool("IsAttacking", false);
-                animator.SetBool("IsIdle", false);
-                animator.SetBool("IsWalking", true);
             }
             if (playerInAttackRange && playerInSightRange)
             {
@@ -107,10 +112,15 @@ public class EnemyScript : MonoBehaviour
 
     private void ChasePlayer()
     {
+        agent.enabled = true;
         if (agent.enabled)
         {
+            AudioSource.PlayClipAtPoint(walkSound, transform.position, 1);
             agent.SetDestination(player.position);
         }
+        animator.SetBool("IsAttacking", false);
+        animator.SetBool("IsIdle", false);
+        animator.SetBool("IsWalking", true);
     }
 
     private void ResetAttack()
@@ -143,6 +153,18 @@ public class EnemyScript : MonoBehaviour
         }
         Debug.Log("Hit");
     }
+    public void OnIdle()
+    {
+        if (Time.time > nextFootStep)
+        {
+            nextFootStep = Time.time + runFootStepsRate;
+            agent.enabled = false;
+            animator.SetBool("IsAttacking", false);
+            animator.SetBool("IsIdle", true);
+            animator.SetBool("IsWalking", false);
+            AudioSource.PlayClipAtPoint(idleSound, transform.position, 0.2f);
+        }
+    }
 
     public void OnDead()
     {
@@ -151,7 +173,9 @@ public class EnemyScript : MonoBehaviour
         animator.SetBool("IsWalking", false);
         //agent.isStopped = true;
         //agent.ResetPath();
+        AudioSource.PlayClipAtPoint(deadSound, transform.position, 0.5f);
         animator.SetTrigger("IsDeath");
+
     }
 
     public void OnPlayerSpotted()
@@ -166,14 +190,19 @@ public class EnemyScript : MonoBehaviour
 
     public void OnAttack()
     {
-        agent.enabled = false;
-        animator.SetBool("IsIdle", false);
-        animator.SetBool("IsWalking", false);
-        animator.SetBool("IsAttacking", true);
-        if (!alreadyAttacked)
+        if (Time.time > nextFootStep)
         {
-            alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            nextFootStep = Time.time + runFootStepsRate;
+            agent.enabled = false;
+            animator.SetBool("IsIdle", false);
+            animator.SetBool("IsWalking", false);
+            animator.SetBool("IsAttacking", true);
+            if (!alreadyAttacked)
+            {
+                alreadyAttacked = true;
+                Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            }
+            AudioSource.PlayClipAtPoint(attackSound, transform.position, 0.5f);
         }
     }
 

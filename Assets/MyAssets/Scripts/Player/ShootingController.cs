@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.Animations.Rigging;
-using DG.Tweening;
+using TMPro;
 
 
 public class ShootingController : MonoBehaviour
@@ -17,7 +17,7 @@ public class ShootingController : MonoBehaviour
     [SerializeField] private Rig aimingWeaponRig;
     [SerializeField] private float timeToEnd;
     [SerializeField] private AnimationCurve curve;
-    [SerializeField] private int ammo = 20;
+    [SerializeField] private int ammo;
 
     [SerializeField] private float weaponAimedForce = 1;
     [SerializeField] private ParticleSystem shootParticle;
@@ -29,16 +29,24 @@ public class ShootingController : MonoBehaviour
     [SerializeField] public float nextFootStep = 0.7f;
     [SerializeField] public Light fireLight;
     [SerializeField] public Transform lookFor;
+    [SerializeField] private TMP_Text ammoText;
     //public AudioClip machineGunShot;
     //public AudioClip walkfootStep;
     //public AudioClip runfootStep;
-    //public AudioClip noAmmo;
-    //public AudioClip reload;
+    public AudioClip noAmmo;
+    public AudioClip reload;
+    public AudioClip machineGunShot;
+
     public LayerMask hitableLayerMasks;
     private Vector3 lookPoint;
     private Vector3 lookDirection;
     private Quaternion lookRotation;
     public Transform empty;
+
+    public void Start()
+    {
+        ammoText.text = ammo.ToString();
+    }
 
     public void Update()
     {
@@ -114,16 +122,23 @@ public class ShootingController : MonoBehaviour
                 nextFire = Time.time + fireRate;
                 shootParticle.Emit(1);
                 shootParticle.transform.rotation = Quaternion.Slerp(shootParticle.transform.rotation, lookRotation, Time.deltaTime * sightRotationSpeed);
-
+                AudioSource.PlayClipAtPoint(machineGunShot, transform.position, 1);
                 Sequence doorSequence = DOTween.Sequence();
                 doorSequence.Append(fireLight.DOIntensity(8, 0.05f));
                 doorSequence.Append(fireLight.DOIntensity(0, 0.05f));
                 ammo--;
+                ammoText.text = ammo.ToString();
 
+            }
+            if(ammo <= 3 && ammo >= 0)
+            {
+                ammoText.DOColor(Color.red, 0.1f);
             }
             else
             {
+                ammoText.DOColor(Color.white, 0.1f);
                 nextFire = Time.time + fireRate;
+                AudioSource.PlayClipAtPoint(noAmmo, transform.position, 1);
             }
         }
     }
@@ -132,7 +147,10 @@ public class ShootingController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            AudioSource.PlayClipAtPoint(reload, transform.position, 1);
             ammo = 30;
+            ammoText.text = ammo.ToString();
+            ammoText.DOColor(Color.white, 0.1f);
         }
     }
 }
