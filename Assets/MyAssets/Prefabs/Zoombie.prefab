@@ -2645,6 +2645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoombieManager: {fileID: 0}
+  enemyAnimationController: {fileID: 3051010161790913066}
   enemyScript: {fileID: 3933127637525392135}
   navMeshAgent: {fileID: 6488769015976604125}
   active: 0
@@ -2679,8 +2680,8 @@ MonoBehaviour:
   isEnemyDead: 0
   walkPointRange: 10
   timeBetweenAttacks: 1.5
-  sightRange: 6
-  attackRange: 1.41
+  sightRange: 7
+  attackRange: 1.6
   maxHealth: 100
   currentHealth: 100
   avatarRotationFrequency: 5
@@ -5808,6 +5809,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4713326997967708728}
   - component: {fileID: 4713326998038045630}
+  - component: {fileID: 3051010161790913066}
   m_Layer: 0
   m_Name: SM_Chr_Zombie_Female_02
   m_TagString: Enemy
@@ -5879,6 +5881,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3051010161790913066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6425848644037198977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bba4f8dee8f914d9e08e5e8e37e566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoombieController: {fileID: 8979531408498273387}
 --- !u!1 &6940542131608733731
 GameObject:
   m_ObjectHideFlags: 0

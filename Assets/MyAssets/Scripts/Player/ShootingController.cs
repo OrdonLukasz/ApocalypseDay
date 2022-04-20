@@ -9,8 +9,13 @@ using TMPro;
 
 public class ShootingController : MonoBehaviour
 {
+    public AudioClip noAmmo;
+    public AudioClip reload;
+    public AudioClip machineGunShot;
+    public Transform empty;
+    public LayerMask hitableLayerMasks;
 
-    [SerializeField] Camera aimingTarget;
+    [SerializeField] private Camera aimingTarget;
     [SerializeField] private Image viewfinder;
     [SerializeField] private float Range = 1000;
     [SerializeField] private float Force = 1000;
@@ -21,27 +26,20 @@ public class ShootingController : MonoBehaviour
 
     [SerializeField] private float weaponAimedForce = 1;
     [SerializeField] private ParticleSystem shootParticle;
-    [SerializeField] public float sightRotationSpeed;
+    [SerializeField] private float sightRotationSpeed;
 
-    [SerializeField] public float fireRate = 0.1f;
-    [SerializeField] public float nextFire = 0.0f;
-    [SerializeField] public float footStepsRate = 0.1f;
-    [SerializeField] public float nextFootStep = 0.7f;
-    [SerializeField] public Light fireLight;
-    [SerializeField] public Transform lookFor;
+    [SerializeField] private float fireRate = 0.1f;
+    [SerializeField] private float nextFire = 0.0f;
+    [SerializeField] private float footStepsRate = 0.1f;
+    [SerializeField] private float nextFootStep = 0.7f;
+    [SerializeField] private Light fireLight;
+    [SerializeField] private Transform lookFor;
     [SerializeField] private TMP_Text ammoText;
-    //public AudioClip machineGunShot;
-    //public AudioClip walkfootStep;
-    //public AudioClip runfootStep;
-    public AudioClip noAmmo;
-    public AudioClip reload;
-    public AudioClip machineGunShot;
 
-    public LayerMask hitableLayerMasks;
     private Vector3 lookPoint;
     private Vector3 lookDirection;
     private Quaternion lookRotation;
-    public Transform empty;
+
 
     public void Start()
     {
@@ -54,10 +52,8 @@ public class ShootingController : MonoBehaviour
         Reload();
     }
 
-
     public void RayShoot()
     {
-
         Vector3 DirectionRay = aimingTarget.transform.TransformDirection(Vector3.forward);
         Debug.DrawRay(aimingTarget.transform.position, DirectionRay * Range, Color.blue);
         RaycastHit Hit;
@@ -70,25 +66,20 @@ public class ShootingController : MonoBehaviour
             if (Hit.collider.CompareTag("Enemy"))
             {
                 viewfinder.DOColor(Color.red, 0.2f);
-                //viewfinder.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2f);
-
             }
             else
             {
                 viewfinder.DOColor(Color.white, 0.2f);
-                // viewfinder.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0.5f);
             }
             if (Input.GetMouseButton(0) && Input.GetMouseButton(1))
             {
                 Debug.Log(Hit.transform.gameObject.name);
-                if (Hit.transform.gameObject.GetComponent<EnemyScript>())
+                if (Hit.transform.gameObject.GetComponent<EnemyScript>() && ammo > 0)
                 {
-
                     EnemyScript enemyScript = Hit.transform.gameObject.GetComponent<EnemyScript>();
                     enemyScript.OnHit(10);
                 }
                 Fire();
-                
             }
             lookFor.position = lookPoint;
             if (Input.GetMouseButtonDown(1))
@@ -99,7 +90,6 @@ public class ShootingController : MonoBehaviour
             {
                 DOTween.To(() => aimingWeaponRig.weight, x => aimingWeaponRig.weight = x, 0f, timeToEnd).SetEase(curve);
             }
-
         }
         else
         {
@@ -130,7 +120,7 @@ public class ShootingController : MonoBehaviour
                 ammoText.text = ammo.ToString();
 
             }
-            if(ammo <= 3 && ammo >= 0)
+            if (ammo <= 3 && ammo >= 0)
             {
                 ammoText.DOColor(Color.red, 0.1f);
             }

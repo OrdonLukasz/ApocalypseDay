@@ -7,19 +7,24 @@ using UnityEditor.AI;
 public class EnemyScript : MonoBehaviour
 {
     public ZoombieManager zoombieManager;
-
-    [SerializeField] private Animator animator;
+   
     public NavMeshAgent agent;
     public Transform player;
     public Transform enemyAvatar;
     public LayerMask whatIsGround, whatIsPlayer;
     public Vector2 walkPoint;
 
+    public float footStepsRate = 0.3f;
+    public float runFootStepsRate = 1f;
+    public float nextFootStep = 0.7f;
+
     public bool walkPointSet;
     public bool alreadyAttacked;
     public bool playerInSightRange;
     public bool playerInAttackRange;
     public bool isEnemyDead;
+
+    [SerializeField] private Animator animator;
 
     [SerializeField] private float walkPointRange;
     [SerializeField] private float timeBetweenAttacks;
@@ -28,10 +33,6 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float maxHealth = 100;
     [SerializeField] private float currentHealth = 100;
     [SerializeField] private float avatarRotationFrequency = 5f;
-
-    public float footStepsRate = 0.3f;
-    public float runFootStepsRate = 1f;
-    public float nextFootStep = 0.7f;
 
     [SerializeField] private AudioClip walkSound;
     [SerializeField] private AudioClip idleSound;
@@ -42,7 +43,6 @@ public class EnemyScript : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator.SetBool("IsIdle", true);
-       // player.position = zoombieManager.playerPosition.position;
     }
 
     public void Start()
@@ -64,9 +64,8 @@ public class EnemyScript : MonoBehaviour
 
             if (!playerInSightRange && !playerInAttackRange)
             {
-                //Patroling();
+                //SearchArea();
                 OnIdle();
-
             }
             if (playerInSightRange && !playerInAttackRange)
             {
@@ -74,7 +73,6 @@ public class EnemyScript : MonoBehaviour
             }
             if (playerInAttackRange && playerInSightRange)
             {
-                // AttackPlayer();
                 OnAttack();
             }
             yield return new WaitForSeconds(1f);
@@ -82,7 +80,7 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    private void Patroling()
+    private void SearchArea()
     {
         if (!walkPointSet)
         {
@@ -127,6 +125,7 @@ public class EnemyScript : MonoBehaviour
     {
         alreadyAttacked = false;
     }
+
     private void SearchWalkPoint()
     {
         float randomZ = Random.Range(-walkPointRange, walkPointRange);
@@ -153,6 +152,7 @@ public class EnemyScript : MonoBehaviour
         }
         Debug.Log("Hit");
     }
+
     public void OnIdle()
     {
         if (Time.time > nextFootStep)
@@ -171,21 +171,8 @@ public class EnemyScript : MonoBehaviour
         isEnemyDead = true;
         agent.enabled = false;
         animator.SetBool("IsWalking", false);
-        //agent.isStopped = true;
-        //agent.ResetPath();
         AudioSource.PlayClipAtPoint(deadSound, transform.position, 0.5f);
         animator.SetTrigger("IsDeath");
-
-    }
-
-    public void OnPlayerSpotted()
-    {
-
-    }
-
-    public void OnJump()
-    {
-
     }
 
     public void OnAttack()

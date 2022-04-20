@@ -25,6 +25,18 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!114 &-6330536257844780305
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0da3609a6239b2f49bcc5b7eb60b5c5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1101 &-3844850459093919077
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -175,9 +187,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0.9726811
-  m_ExitTime: 0.30000004
+  m_TransitionDuration: 0.3743119
+  m_TransitionOffset: 0
+  m_ExitTime: 0.0036350032
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -222,7 +234,8 @@ AnimatorState:
   - {fileID: -3844850459093919077}
   - {fileID: 248970767849359054}
   - {fileID: 3489141175557750062}
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: -6330536257844780305}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -231,8 +244,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 8b863f6c1bc363b48a16235a4f7c1df7,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: 47ec4a3e81d0db441bffd9e20c7608ce, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -367,9 +379,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.052546024
-  m_TransitionOffset: 0.18243057
-  m_ExitTime: 0.9375
+  m_TransitionDuration: 0.71365917
+  m_TransitionOffset: 0
+  m_ExitTime: 0.0035423022
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -386,15 +398,18 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: IsWalking
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsAttacking
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3919209760158806608}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
-  m_TransitionOffset: 0.09228829
-  m_ExitTime: 0.6875
+  m_TransitionDuration: 0.4083082
+  m_TransitionOffset: 0
+  m_ExitTime: 0.027714048
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -420,9 +435,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0.19853903
-  m_ExitTime: 0.6875
+  m_TransitionDuration: 0.25569057
+  m_TransitionOffset: 0
+  m_ExitTime: 0.026950033
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0

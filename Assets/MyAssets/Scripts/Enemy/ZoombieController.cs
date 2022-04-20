@@ -6,7 +6,6 @@ using UnityEngine.AI;
 
 public class ZoombieController : MonoBehaviour, IPoolable
 {
-
     public ZoombieManager zoombieManager;
     public EnemyScript enemyScript;
     public NavMeshAgent navMeshAgent;
@@ -32,6 +31,4 @@ public class ZoombieController : MonoBehaviour, IPoolable
         active = true;
         gameObject.SetActive(true);
     }
-
-  
 }

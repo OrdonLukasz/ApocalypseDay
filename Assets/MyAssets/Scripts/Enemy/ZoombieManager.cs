@@ -6,9 +6,10 @@ using ObjectPooling;
 public class ZoombieManager : MonoBehaviour
 {
     public PlayerController playerController;
-
+    
     public bool canSpawn;
     public bool isOnNavMesh;
+    public Transform playerPosition;
 
     [SerializeField] private List<ZoombieController> zoombieControllers = new List<ZoombieController>();
     [Range(1, 30)]
@@ -18,8 +19,6 @@ public class ZoombieManager : MonoBehaviour
     [SerializeField] private Vector2 xSpawnPosition;
     [SerializeField] private Vector2 zSpawnPosition;
     [SerializeField] private float ySpawnPosition;
-    private Vector3 currentRandomPosition;
-    public Transform playerPosition;
 
     private float spawnTimer;
     private PrefabPool _pool;
@@ -54,37 +53,8 @@ public class ZoombieManager : MonoBehaviour
         zoombieControllers.Add(agent);
         agent.zoombieManager = this;
         agent.transform.position = RandomPosition();
-        //CheckSpawnPointOnNavMesh();
-        //agent.transform.position = ReturnSpawnPosition();//
         agent.enemyScript.player = playerPosition;
         StartCoroutine(SpawningCoroutine());
-    }
-
-    private void CheckSpawnPointOnNavMesh()
-    {
-        isOnNavMesh = false;
-        currentRandomPosition = RandomPosition();
-        Debug.DrawRay(currentRandomPosition, Vector3.down * 10, Color.blue);
-        RaycastHit hit;
-        if (Physics.Raycast(currentRandomPosition, Vector3.down, out hit))
-        {
-            // the raycast hit
-            var NavMesh = LayerMask.NameToLayer("NavMesh");
-            if (hit.transform.gameObject.layer == NavMesh)
-            {
-                Debug.Log("trafiony!!!!");
-                isOnNavMesh = true;
-            }
-        }
-        else
-        {
-            isOnNavMesh = false;
-            CheckSpawnPointOnNavMesh();
-            //RandomPosition();
-            Debug.Log("pufło!!!!");
-
-            // the raycast didn't hit, maybe there's a hole in the terrain?
-        }
     }
 
     private bool CheckCanSpawnAgent()
@@ -104,38 +74,12 @@ public class ZoombieManager : MonoBehaviour
         return true;
     }
 
-    public Vector3 ReturnSpawnPosition()
-    {
-        
-        do
-        {
-            Debug.Log("returnspawnpos");
-            Vector3 spwnPos = currentRandomPosition;
-
-            return spwnPos;
-
-        } while (isOnNavMesh);
-    }
-
     private Vector3 RandomPosition()
     {
-        Debug.Log("dsadsa");
         float xRandomSpawnPositon = UnityEngine.Random.Range(xSpawnPosition.x, xSpawnPosition.y);
         float zRandomSpawnPositon = UnityEngine.Random.Range(zSpawnPosition.x, zSpawnPosition.y);
-        //Debug.Log(xRandomSpawnPositon +  ySpawnPosition + zRandomSpawnPositon);
         return new Vector3(xRandomSpawnPositon, ySpawnPosition, zRandomSpawnPositon);
     }
-
-
-
-    //private Vector3 RandomPosition()
-    //{
-    //    Debug.Log("dsadsa");
-    //    float xRandomSpawnPositon = UnityEngine.Random.Range(xSpawnPosition.x, xSpawnPosition.y);
-    //    float zRandomSpawnPositon = UnityEngine.Random.Range(zSpawnPosition.x, zSpawnPosition.y);
-
-    //    return new Vector3(xRandomSpawnPositon, ySpawnPosition, zRandomSpawnPositon);
-    //}
 
     private float RandomSpawnTime()
     {

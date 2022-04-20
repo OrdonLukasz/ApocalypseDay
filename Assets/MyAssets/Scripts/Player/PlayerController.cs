@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using UnityStandardAssets.Characters.ThirdPerson;
 
 public class PlayerController : MonoBehaviour
 {
-
+    public DeadMenu deadMenu;
     public Transform cameraView;
     public Transform moveDirectionPoint;
     public NavMeshAgent agent;
@@ -18,12 +19,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 m_GroundNormal;
     [SerializeField] private Vector3 move;
     [SerializeField] private float turnSmoothVelocity;
+    [SerializeField] private float playerHp;
+    [SerializeField] private Image playerHpSlider;
     public float footStepsRate = 0.3f;
     public float runFootStepsRate = 1f;
     public float nextFootStep = 0.7f;
 
     public AudioClip walkfootStep;
     public AudioClip runfootStep;
+    public AudioClip getDamage;
 
     private void Start()
     {
@@ -31,7 +35,6 @@ public class PlayerController : MonoBehaviour
     }
     public void Update()
     {
-        //CharacterRotation();
         if (Input.GetKey(KeyCode.LeftShift))
         {
             Walking(runSpeed);
@@ -42,10 +45,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void LateUpdate()
-    {
-        //cam.position = Vector3.zero;
-    }
     public void Walking(float sped)
     {
 
@@ -66,7 +65,7 @@ public class PlayerController : MonoBehaviour
                 nextFootStep = Time.time + footStepsRate;
                 AudioSource.PlayClipAtPoint(walkfootStep, transform.position, 0.1f);
             }
-            
+
             animator.SetBool("IsWalking", true);
             animator.SetBool("IsRunning", false);
         }
@@ -80,7 +79,7 @@ public class PlayerController : MonoBehaviour
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        //Transform frontDirection = cameraView;
+        Transform frontDirection = cameraView;
         cameraView.LookAt(moveDirectionPoint);
         float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraView.eulerAngles.y;
         float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
@@ -102,6 +101,31 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnGetDamage(float hitDamageValue)
+    {
+        playerHp -= hitDamageValue;
+        if (playerHp <= 0)
+        {
+            OnDead();
+            return;
+        }
+        else
+        {
+            OnHpChange(hitDamageValue);
+            AudioSource.PlayClipAtPoint(getDamage, transform.position, 0.2f);
+        }
+    }
+
+    public void OnHpChange(float valueChange)
+    {
+        playerHpSlider.fillAmount -= valueChange / 100;
+    }
+
+    public void OnDead()
+    {
+        deadMenu.PlayerDead();
+    }
+
     public void PlayerMovement()
     {
         if (move.magnitude > 1f) move.Normalize();
@@ -109,9 +133,7 @@ public class PlayerController : MonoBehaviour
             move = transform.InverseTransformDirection(move);
         }
         move = Vector3.ProjectOnPlane(move, m_GroundNormal);
-
     }
-
 }
 
 
