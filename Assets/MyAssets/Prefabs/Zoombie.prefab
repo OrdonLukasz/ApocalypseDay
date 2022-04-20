@@ -2645,7 +2645,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoombieManager: {fileID: 0}
-  enemyAnimationController: {fileID: 3051010161790913066}
   enemyScript: {fileID: 3933127637525392135}
   navMeshAgent: {fileID: 6488769015976604125}
   active: 0
@@ -2662,7 +2661,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoombieManager: {fileID: 0}
-  animator: {fileID: 4713326998038045630}
   agent: {fileID: 6488769015976604125}
   player: {fileID: 0}
   enemyAvatar: {fileID: 4713326997967708728}
@@ -2673,21 +2671,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   walkPoint: {x: 0, y: 0}
+  footStepsRate: 8
+  runFootStepsRate: 8
+  nextFootStep: 8
   walkPointSet: 0
   alreadyAttacked: 0
   playerInSightRange: 0
   playerInAttackRange: 0
   isEnemyDead: 0
+  animator: {fileID: 4713326998038045630}
   walkPointRange: 10
   timeBetweenAttacks: 1.5
-  sightRange: 7
+  sightRange: 9
   attackRange: 1.6
   maxHealth: 100
   currentHealth: 100
   avatarRotationFrequency: 5
-  footStepsRate: 8
-  runFootStepsRate: 8
-  nextFootStep: 8
   walkSound: {fileID: 8300000, guid: 373319689c163c74086e4745e3329217, type: 3}
   idleSound: {fileID: 8300000, guid: bd7db37029b6c90479d49c057243053e, type: 3}
   attackSound: {fileID: 8300000, guid: cdfbbb2b616777e44a5038eb327bdb2b, type: 3}

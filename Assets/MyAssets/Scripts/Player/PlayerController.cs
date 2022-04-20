@@ -21,13 +21,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float turnSmoothVelocity;
     [SerializeField] private float playerHp;
     [SerializeField] private Image playerHpSlider;
-    public float footStepsRate = 0.3f;
-    public float runFootStepsRate = 1f;
-    public float nextFootStep = 0.7f;
+    [SerializeField] private float footStepsRate = 0.3f;
+    [SerializeField] private float runFootStepsRate = 1f;
+    [SerializeField] private float nextFootStep = 0.7f;
 
-    public AudioClip walkfootStep;
-    public AudioClip runfootStep;
-    public AudioClip getDamage;
+    [SerializeField] private AudioClip walkfootStep;
+    [SerializeField] private AudioClip runfootStep;
+    [SerializeField] private AudioClip getDamage;
 
     private void Start()
     {
@@ -37,15 +37,15 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            Walking(runSpeed);
+            Movement(runSpeed);
         }
         else
         {
-            Walking(speed);
+            Movement(speed);
         }
     }
 
-    public void Walking(float sped)
+    public void Movement(float sped)
     {
 
         if (sped == runSpeed && Input.GetKey(KeyCode.W) || sped == runSpeed && Input.GetKey(KeyCode.A) || sped == runSpeed && Input.GetKey(KeyCode.D) || sped == runSpeed && Input.GetKey(KeyCode.S))
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        Transform frontDirection = cameraView;
+        //Transform frontDirection = cameraView;
         cameraView.LookAt(moveDirectionPoint);
         float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraView.eulerAngles.y;
         float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
