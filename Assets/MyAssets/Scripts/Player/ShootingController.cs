@@ -17,14 +17,15 @@ public class ShootingController : MonoBehaviour
 
     [SerializeField] private Camera aimingTarget;
     [SerializeField] private Image viewfinder;
-    [SerializeField] private float Range = 1000;
-    [SerializeField] private float Force = 1000;
+    [SerializeField] private float Range = 1000f;
+    [SerializeField] private float Force = 1000f;
     [SerializeField] private Rig aimingWeaponRig;
     [SerializeField] private float timeToEnd;
     [SerializeField] private AnimationCurve curve;
     [SerializeField] private int ammo;
+    [SerializeField] private bool isMaxAmmo = false;
 
-    [SerializeField] private float weaponAimedForce = 1;
+    [SerializeField] private float weaponAimedForce = 1f;
     [SerializeField] private ParticleSystem shootParticle;
     [SerializeField] private float sightRotationSpeed;
 
@@ -118,7 +119,7 @@ public class ShootingController : MonoBehaviour
                 doorSequence.Append(fireLight.DOIntensity(0, 0.05f));
                 ammo--;
                 ammoText.text = ammo.ToString();
-
+                isMaxAmmo = false;
             }
             if (ammo <= 3 && ammo >= 0)
             {
@@ -131,16 +132,18 @@ public class ShootingController : MonoBehaviour
                 AudioSource.PlayClipAtPoint(noAmmo, transform.position, 1);
             }
         }
+
     }
 
     void Reload()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && !isMaxAmmo)
         {
             AudioSource.PlayClipAtPoint(reload, transform.position, 1);
             ammo = 30;
             ammoText.text = ammo.ToString();
             ammoText.DOColor(Color.white, 0.1f);
+            isMaxAmmo = true;
         }
     }
 }

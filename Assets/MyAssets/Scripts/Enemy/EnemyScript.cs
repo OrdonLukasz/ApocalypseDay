@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEditor.AI;
 
 public class EnemyScript : MonoBehaviour
 {
@@ -168,10 +167,13 @@ public class EnemyScript : MonoBehaviour
 
     public void OnDead()
     {
+        if (!isEnemyDead)
+        {
+            AudioSource.PlayClipAtPoint(deadSound, transform.position, 0.5f);
+        }
         isEnemyDead = true;
         agent.enabled = false;
         animator.SetBool("IsWalking", false);
-        AudioSource.PlayClipAtPoint(deadSound, transform.position, 0.5f);
         animator.SetTrigger("IsDeath");
     }
 
