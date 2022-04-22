@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         agent.updateRotation = false;
     }
     public void Update()
@@ -91,7 +93,7 @@ public class PlayerController : MonoBehaviour
             GetComponent<NavMeshAgent>().Move(moveDir.normalized * sped * Time.deltaTime);
             PlayerMovement();
         }
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(1) || Input.GetMouseButton(0))
         {
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
         }

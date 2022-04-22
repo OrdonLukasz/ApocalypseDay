@@ -9,6 +9,8 @@ public class DeadMenu : MonoBehaviour
 
     public void PlayerDead()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         DeadMenuUi.SetActive(true);
         Time.timeScale = 0f;
     }
