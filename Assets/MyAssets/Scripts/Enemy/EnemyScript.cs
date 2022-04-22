@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class EnemyScript : MonoBehaviour
 {
     public ZoombieManager zoombieManager;
-   
+
     public NavMeshAgent agent;
     public Transform player;
     public Transform enemyAvatar;
@@ -32,11 +32,24 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float maxHealth = 100;
     [SerializeField] private float currentHealth = 100;
     [SerializeField] private float avatarRotationFrequency = 5f;
+    [SerializeField] private Vector2 xTargetPosition;
+    [SerializeField] private Vector2 zTargetPosition;
+    [SerializeField] private float ySpawnPosition;
+    [SerializeField] private Vector3 targetPosition;
+    [SerializeField] private float checkDestinationRate = 0.25f;
+    [SerializeField] private float targetAccuracy = 0.25f;
 
     [SerializeField] private AudioClip walkSound;
     [SerializeField] private AudioClip idleSound;
     [SerializeField] private AudioClip attackSound;
     [SerializeField] private AudioClip deadSound;
+
+
+    public List<Vector2> chanceTime = new List<Vector2>();
+    public List<float> chance = new List<float>();
+    public bool isGoingForward = false;
+    public bool isGoingBack = false;
+    public bool isStay = false;
 
     private void Awake()
     {
@@ -46,12 +59,13 @@ public class EnemyScript : MonoBehaviour
 
     public void Start()
     {
+        SetDestination();
         StartCoroutine(CheckIfPlayerNearby());
     }
 
     public void Update()
     {
-        UpdateAvatarRotation();
+
     }
 
     public IEnumerator CheckIfPlayerNearby()
@@ -64,11 +78,13 @@ public class EnemyScript : MonoBehaviour
             if (!playerInSightRange && !playerInAttackRange)
             {
                 //SearchArea();
-                OnIdle();
+                StartCoroutine(randomState());
+                Debug.Log("1");
+                //OnIdle();
             }
             if (playerInSightRange && !playerInAttackRange)
             {
-                ChasePlayer();
+                MoveToTarget(player.position);
             }
             if (playerInAttackRange && playerInSightRange)
             {
@@ -79,45 +95,70 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    private void SearchArea()
+    IEnumerator randomState()
     {
-        if (!walkPointSet)
+        float randValue = Random.value;
+        Debug.Log(randValue);
+        if (randValue < chance[0])
         {
-            SearchWalkPoint();
+            CheckDestinationReached();
+            isGoingForward = true;
+            isStay = false;
+            yield return new WaitForSeconds(UnityEngine.Random.Range(chanceTime[0].x, chanceTime[0].y));
         }
-        if (walkPointSet)
+        else
         {
-            agent.SetDestination(walkPoint);
-        }
-        Vector3 distanceToWalkPoint = transform.position - new Vector3(walkPoint.x, 0, walkPoint.x);
-        if (distanceToWalkPoint.magnitude < 1f)
-        {
-            walkPointSet = false;
+            OnIdle();
+            isGoingForward = false;
+            isStay = true;
+            yield return new WaitForSeconds(UnityEngine.Random.Range(chanceTime[1].x, chanceTime[1].y));
         }
     }
 
-    private void UpdateAvatarRotation()
+    private void OnDestinationReached()
+    {
+        SetDestination();
+    }
+
+    private void CheckDestinationReached()
+    {
+        Debug.Log("2");
+        if (Vector3.Distance(transform.position, targetPosition) <= targetAccuracy)
+        {
+            OnDestinationReached();
+        }
+    }
+
+    private void SetDestination()
+    {
+        targetPosition = RandomPosition();
+        //agent.SetDestination(targetPosition);
+        MoveToTarget(targetPosition);
+    }
+
+    private void UpdateAvatarRotation(Vector3 lookPoint)
     {
         if (!isEnemyDead)
         {
-            var lookPos = player.position - enemyAvatar.position;
+            var lookPos = lookPoint - enemyAvatar.position;
             lookPos.y = 0;
             var rotation = Quaternion.LookRotation(lookPos);
             enemyAvatar.rotation = Quaternion.Slerp(enemyAvatar.rotation, rotation, Time.deltaTime * avatarRotationFrequency);
         }
     }
 
-    private void ChasePlayer()
+    private void MoveToTarget(Vector3 destinationPosition)
     {
         agent.enabled = true;
         if (agent.enabled)
         {
             AudioSource.PlayClipAtPoint(walkSound, transform.position, 1);
-            agent.SetDestination(player.position);
+            agent.SetDestination(destinationPosition);
         }
         animator.SetBool("IsAttacking", false);
         animator.SetBool("IsIdle", false);
         animator.SetBool("IsWalking", true);
+        UpdateAvatarRotation(destinationPosition);
     }
 
     private void ResetAttack()
@@ -125,17 +166,12 @@ public class EnemyScript : MonoBehaviour
         alreadyAttacked = false;
     }
 
-    private void SearchWalkPoint()
+    private Vector3 RandomPosition()
     {
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
+        float xRandomSpawnPositon = UnityEngine.Random.Range(xTargetPosition.x, xTargetPosition.y);
+        float zRandomSpawnPositon = UnityEngine.Random.Range(zTargetPosition.x, zTargetPosition.y);
 
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
-        {
-            walkPointSet = true;
-        }
+        return new Vector3(xRandomSpawnPositon, ySpawnPosition, zRandomSpawnPositon);
     }
 
     public void OnHit(float hitDamageValue)

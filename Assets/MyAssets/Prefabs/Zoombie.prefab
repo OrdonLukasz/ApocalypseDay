@@ -2687,10 +2687,24 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   avatarRotationFrequency: 5
+  xTargetPosition: {x: -5, y: 5}
+  zTargetPosition: {x: -5, y: 5}
+  ySpawnPosition: 0
+  targetPosition: {x: 0, y: 0, z: 0}
+  checkDestinationRate: 1
+  targetAccuracy: 1
   walkSound: {fileID: 8300000, guid: 373319689c163c74086e4745e3329217, type: 3}
   idleSound: {fileID: 8300000, guid: bd7db37029b6c90479d49c057243053e, type: 3}
   attackSound: {fileID: 8300000, guid: cdfbbb2b616777e44a5038eb327bdb2b, type: 3}
   deadSound: {fileID: 8300000, guid: c56d747a8e4dc834e89fe50c4facec07, type: 3}
+  chanceTime:
+  - {x: 0, y: 0}
+  chance:
+  - 30
+  - 70
+  isGoingForward: 0
+  isGoingBack: 0
+  isStay: 0
 --- !u!82 &3933127637525392134
 AudioSource:
   m_ObjectHideFlags: 0

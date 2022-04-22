@@ -5,11 +5,11 @@ using UnityEngine.AI;
 
 public class SpawningScript : MonoBehaviour
 {
-    [SerializeField]
-    private int enemyAmount;
-
     public GameObject player;
     public GameObject enemy;
+
+    [SerializeField]
+    private int enemyAmount;
 
     void Start()
     {
